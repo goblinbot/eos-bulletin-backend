@@ -4,6 +4,7 @@
   "description": "Backend for the Eos bulletin board",
   "main": "index.js",
   "scripts": {
+    "start": "nodemon index",
     "test": "test"
   },
   "author": "Thijs Boerma",

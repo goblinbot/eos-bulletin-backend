@@ -1,4 +1,3 @@
-/* dependancies verklaren en ophalen */
 const express = require('express');
 const app = express();
 const http = require('http').Server(app);
@@ -81,13 +80,6 @@ function dumpOldMessages() {
         messageContainer.shift();
     }
 }
-
-// Delete a message from the container / JSON
-// function removeMessageFromContainer(id) {
-//     if(messageContainer.length > messageLimit) {
-//         messageContainer.shift();
-//     }
-// }
 
 // send the message container over a websocket when updated.
 function sendWebsocketUpdate() {
