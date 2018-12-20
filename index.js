@@ -1,10 +1,13 @@
-/* dependancies verklaren en ophalen */
 const express = require('express');
 const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const ip = require('ip');
+const cors = require('cors');
 const port = process.env.PORT || 5009;
+
+/* express extra setup */
+app.use(cors());
 
 /* load the config */
 const config = require('./config/config.json');
@@ -13,12 +16,8 @@ const config = require('./config/config.json');
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
-// naar config plaatsen?
 const messageLimit = 7;
-
-let messageContainer = {};
-let messageCounter = 0;
-
+let messageContainer = [];
 
 
 client.once('ready', () => {
@@ -60,9 +59,13 @@ function filterUserInput(input) {
 // addToContainer
 function addToContainer(message) {
     if(message && message !== '') {
-        messageContainer[messageCounter] = message;
-        messageCounter++;
+        messageContainer.push({
+            "time": "00:00",
+            "day": "wip",
+            "message": message
+        });
         dumpOldMessages();
+        sendWebsocketUpdate();
     }
 }
 
@@ -73,15 +76,12 @@ function validateChannelName(message) {
 
 // Cleanup
 function dumpOldMessages() {
-    if (messageCounter >= messageLimit) {
-        let idToRemove = (messageCounter - messageLimit);
-        removeMessageFromContainer(idToRemove);
+    if (messageContainer.length > messageLimit) {
+        messageContainer.shift();
     }
 }
 
-// Delete a message from the container / JSON
-function removeMessageFromContainer(id) {
-    if(messageContainer[id]) {
-        delete messageContainer[id];
-    }
+// send the message container over a websocket when updated.
+function sendWebsocketUpdate() {
+    io.emit('updateMessages', messageContainer);
 }

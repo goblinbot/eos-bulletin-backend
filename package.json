@@ -4,11 +4,13 @@
   "description": "Backend for the Eos bulletin board",
   "main": "index.js",
   "scripts": {
+    "start": "nodemon index",
     "test": "test"
   },
   "author": "Thijs Boerma",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
     "discord.js": "^11.4.2",
     "express": "^4.16.4",
     "ip": "^1.1.5",
