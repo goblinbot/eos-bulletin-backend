@@ -16,3 +16,6 @@ First you'll need to create your own Config.json and a Discord bot on the Discor
 (WIP more instructions)
 
 A premade solution to use the list of messages built in Angular can be found [here](https://github.com/goblinbot/eos-bulletin-frontend)
+
+### TODO
+Add 'Day', 'Time' and other information that could be used to the Messages JSON.
