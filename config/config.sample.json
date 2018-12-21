@@ -1,4 +1,6 @@
 {
     "token": "Your token here!",
-    "channelname": "channel_name_to_listen_to_here"
+    "channelname": "channel_name_to_listen_to_here",
+    "maxmessages": 7,
+    "maxlength": 511
 }
