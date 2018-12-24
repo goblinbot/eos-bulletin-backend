@@ -5,6 +5,8 @@ const io = require('socket.io')(http);
 const ip = require('ip');
 const cors = require('cors');
 const port = process.env.PORT || 5009;
+const striptags = require('striptags');
+const stripemoji = require('emoji-strip');
 
 /* express extra setup */
 app.use(cors());
@@ -16,7 +18,6 @@ const config = require('./config/config.json');
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
-const messageLimit = 7;
 let messageContainer = [];
 
 
@@ -43,17 +44,31 @@ app.get('/', function (req, res) {
 // Trigger on a discord message.
 client.on('message', message => {
     // first, validate if it's in the right channel. Secondly, filter out some nasty user input.
-    if (validateChannelName(message)) {
+    if (validateChannelName(message) && !userIsBot(message)) {
         let input = filterUserInput(message.content);
         addToContainer(input);
     }
 });
 
-// Huizing/Silvester filter lives again! WIP.
+// Huizing/Silvester filter lives again!
 function filterUserInput(input) {
-    // do something; remove HTML, script tags, and other nasties.
     let output = input;
+    output = striptags(output);
+    output = stripemoji(output);
+    output = trimStringToMaxLength(output);
     return output;
+}
+
+// trim the string to the defined max length, and add ellipses if the message is cut off.
+function trimStringToMaxLength(string) {
+    return string.length > config.maxlength ?
+        string.substring(0, config.maxlength - 3) + "..." :
+        string;
+}
+
+// checkForRobots: Checks if the message came from a Bot. We don't want those.
+function userIsBot(message) {
+    return (message.author.bot);
 }
 
 // addToContainer
@@ -76,7 +91,7 @@ function validateChannelName(message) {
 
 // Cleanup
 function dumpOldMessages() {
-    if (messageContainer.length > messageLimit) {
+    if (messageContainer.length > config.maxmessages) {
         messageContainer.shift();
     }
 }
